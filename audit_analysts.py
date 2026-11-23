@@ -9,6 +9,15 @@ FIELDS = {
     "kline": ("趋势方向", "趋势时长", "趋势惯性", "趋势强度", "支撑位距离", "阻力位距离"),
 }
 REASON = {"news": "Reason", "kline": "简短理由"}
+KLINE_ENGLISH_LABELS = {
+    "trend direction": "趋势方向",
+    "trend duration": "趋势时长",
+    "trend persistence": "趋势惯性",
+    "trend strength": "趋势强度",
+    "distance to support": "支撑位距离",
+    "distance to resistance": "阻力位距离",
+    "reason": "简短理由",
+}
 
 
 def check_response(response, role):
@@ -27,6 +36,8 @@ def check_response(response, role):
         if not match:
             continue
         label = match.group(1).strip().casefold()
+        if role == "kline":
+            label = KLINE_ENGLISH_LABELS.get(label, label)
         if label in labels:
             labels[label].append(match.group(2).strip())
             if label == REASON[role].casefold():
@@ -49,7 +60,10 @@ def check_response(response, role):
             cleaned = line.strip().replace("**", "").replace("__", "")
             cleaned = re.sub(r"^(?:[-*•]\s+|\d+[.)、]\s*)", "", cleaned)
             match = re.match(r"^([^:：]+)\s*[:：]", cleaned)
-            if match and match.group(1).strip().casefold() in labels:
+            label = match.group(1).strip().casefold() if match else ""
+            if role == "kline":
+                label = KLINE_ENGLISH_LABELS.get(label, label)
+            if label in labels:
                 break
             if cleaned:
                 continuation.append(cleaned)
