@@ -1,0 +1,10 @@
+name: stock-market-mas
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - langgraph==1.2.19
+      - matplotlib==3.11.2
+      - numpy==2.5.5
